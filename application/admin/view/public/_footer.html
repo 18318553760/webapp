@@ -1,0 +1,20 @@
+<script type="text/javascript">
+   //更新缓存
+    function update_cache(){
+        $.ajax({
+            url:"{:url('System/update_Cache')}",
+            beforeSend:function(){
+                layer.msg('正在更新缓存');
+            },
+            success:function(data){
+            	layer.msg(data.msg);
+                window.location.reload();
+            }
+        });
+    }
+
+</script>
+<div class="footer">
+    <div class="pull-right">© 20018-2026 <a href="/" target="_blank">webapp-洪少版本所有</a>
+    </div>
+</div>

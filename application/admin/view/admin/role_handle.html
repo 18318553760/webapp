@@ -1,0 +1,167 @@
+{include file="public/_meta" title="角色管理"} 
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInUp">  
+        <div class="row">          
+            <div class="col-sm-12 ">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5> {if condition="$actlist"}编辑角色{else/}添加角色{/if}</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="form_basic.html#">
+                                <i class="fa fa-wrench"></i>
+                            </a>                            
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="ibox-content ">
+                        <form method="post" class="form-horizontal" action="{:url('Admin/role_handle')}" id="myform">
+                            <input type="hidden" name="role_id" value="{$actlist.role_id}">                        
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">角色名称：</label>
+                                <div class="col-sm-3">
+                                    <input type="text" placeholder="角色名称" class="form-control" name="data[role_name]" value="{$actlist.role_name}"> 
+                                    <span class="help-block m-b-none">请输入您注册时所填的角色名称</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">角色描述：</label>
+                                <div class="col-sm-3">
+                                    <input type="text" placeholder="角色描述" class="form-control" name="data[role_desc]" value="{$actlist.role_desc}"> 
+                                    <span class="help-block m-b-none">请输入您注册时所填的角色描述</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">权限分配：</label>
+                                <div class="col-sm-11">
+                                    <div class="ncap-account-container" >
+                                        <h4>
+                                            <input id="cls_full" onclick="chooseAll(this)" type="checkbox">
+                                            <label>全选</label>
+                                        </h4>
+                                    </div>
+                                    <div>
+                                        {foreach name="modules" item="vo" key="kk" }                                        
+                                            <div class="ncap-account-container" >
+                                                <h4  >
+                                                    <label>{$group[$kk]}</label>
+                                                    <input value="1" cka="mod-{$kk}" type="checkbox">
+                                                    <label>全部</label>
+                                                </h4>                                               
+                                                <ul >
+                                                    {foreach name="vo" item="vv"}                                                  
+                                                        <li class="checkbox" style="display: inline-block;">
+                                                            <label class="checkbox" >
+                                                                <input  class="input-mini" name="right[]" value="{$vv.id}" {if condition="$vv.enable eq 1"}checked{/if} ck="mod-{$kk}" type="checkbox" > {$vv.name}
+                                                            </label>
+                                                        </li>
+                                                    {/foreach}
+                                                </ul>
+                                            </div>
+                                       {/foreach}
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                         
+                         
+                      
+                            <div class="form-group">
+                                <div class="col-sm-offset-1 col-sm-3">
+                                    <button class="btn btn-sm btn-info" type="submit" >确定提交</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- 全局js -->
+    <script src="__STATIC__/hadmin/js/jquery.min.js?v=2.1.4"></script>
+    <script src="__STATIC__/hadmin/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="__STATIC__/hadmin/js/plugins/layer/layer.min.js"></script>
+    <script src="__STATIC__/hadmin/js/content.min.js"></script>
+    <!-- 全局js -->
+    <!-- 自定义js -->
+    <script src="__STATIC__/hadmin/js/plugins/iCheck/icheck.min.js"></script>  
+    <!-- 自定义js -->
+    <script>
+        $(document).ready(function(){
+            $('#loading-example-btn').click(function () {
+                btn = $(this);
+                simpleLoad(btn, true)
+                simpleLoad(btn, false)
+            });
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+        });
+        function simpleLoad(btn, state) {
+            if (state) {
+                btn.children().addClass('fa-spin');
+                btn.contents().last().replaceWith(" Loading");
+            } else {
+                setTimeout(function () {
+                    btn.children().removeClass('fa-spin');
+                    btn.contents().last().replaceWith(" Refresh");
+                }, 2000);
+            }
+        }
+        $('#loading-example-btn').click(function(){
+            location.reload();
+        }) 
+        $("#myform").submit(function () {
+            var self = $(this);
+            $.post(self.attr("action"), self.serialize(), success, "json");
+            return false;          
+        }); 
+        function success(data) {
+            if (data.code == 1) {                
+                layer.msg(data.msg, {
+                    icon: 1,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                }, function(){
+
+                    setTimeout(function(){
+                        window.location.href = data.url;
+                    },500);
+                });
+            } else {
+                layer.msg(data.msg, {
+                    icon: 2,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        }
+        function chooseAll(o){
+            var vt = $(o).is(':checked');
+            if(vt){
+                $('input[type=checkbox]').prop('checked',vt);
+            }else{
+                $('input[type=checkbox]').removeAttr('checked');
+            }
+        }
+        $(document).ready(function(){
+            $(":checkbox[cka]").click(function(){
+                var $cks = $(":checkbox[ck='"+$(this).attr("cka")+"']");
+                if($(this).is(':checked')){
+                    $cks.each(function(){$(this).prop("checked",true);});
+                }else{
+                    $cks.each(function(){$(this).removeAttr('checked');});
+                }
+            });
+        });
+    </script> 
+    <style>
+
+      .pagination>li>a,.pagination>li>span{padding:6px 10px;}
+   
+    </style> 
+    </body>
+</html>

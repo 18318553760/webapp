@@ -1,0 +1,50 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="nav-close"><i class="fa fa-times-circle"></i>
+    </div>
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu"> 
+            <li class="nav-header">
+                <div class="dropdown profile-element">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <span class="clear">
+                            <span class="block m-t-xs" style="font-size:20px;">
+                                <i class="fa fa-area-chart"></i>
+                                <strong class="font-bold">webapp</strong>
+                            </span>
+                        </span>
+                    </a>
+                </div>
+                <div class="logo-element">app
+                </div>
+            </li>   
+            {volist name="admin_menu" id="vo"}
+             <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
+                <span class="ng-scope">{$vo['name']}</span>
+            </li>     
+            {if  condition="isset($vo['_child'])" }
+            {volist name="vo['_child']" id="v1"}
+            <li {if condition="$v1['id'] eq $current_menu['parentid']" }class="active"{/if}>
+                <a class="J_menuItem" {if  condition="!is_array($v1['_child'])" } href="{:url($v1['group'].'/'.$v1['model'].'/'.$v1['action'],$v1['data'])}" {/if}>
+                    <i class="{$v1['icon']}"></i>
+                    <span class="nav-label">{$v1['name']}</span>  
+                    {if  condition="isset($v1['_child'])" }                         
+                    <span class="fa arrow"></span> 
+                    {/if}                              
+                </a>
+                 <ul class="nav nav-second-level">
+                    {if  condition="isset($v1['_child'])" }
+                    {volist name="v1['_child']" id="v2"}
+                    <li>
+                        <a class="J_menuItem" href="{:url($v2['group'].'/'.$v2['model'].'/'.$v2['action'],$v2['data'])}">{$v2['name']}</a>
+                    </li>
+                    {/volist} 
+                    {/if}                   
+                </ul>
+            </li>
+            {/volist}
+           {/if}   
+            <li class="line dk"></li>
+            {/volist}
+        </ul>
+    </div>
+</nav>
