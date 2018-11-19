@@ -47,6 +47,7 @@ class Base extends Controller
             return $this->redirect('login/index');
         }        
         $this->getLeftMenu();
+
         $this->check_priv();
     }
 
@@ -87,7 +88,7 @@ class Base extends Controller
         $menu_list=getMenuList($all_menu_list,$act_list);
         $current_menu = $this->getCurrentMenu(); // 获取当前菜单 
         $this->assign('current_menu', $current_menu); // 当前菜单
-        $this->assign('admin_menu',$menu_list); // 所有菜单
+        $this->assign('admin_menu',$menu_list); // 所有菜单        
     }
 
     /**
@@ -143,7 +144,7 @@ class Base extends Controller
         $model = $this->model ? $this->model : request()->controller();
 
         try {
-            $res = model($model)->allowField(true)->save(['status' => $data['status']], [$id=> $data[$id]]);//过滤掉不更新的数据
+            $res = model($model)->allowField(true)->save(['status' => $data['status']], ['id'=> $data['id']]);//过滤掉不更新的数据
         }catch(\Exception $e) {
             return $this->result('', 0, $e->getMessage());
         }

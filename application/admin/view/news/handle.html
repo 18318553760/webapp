@@ -18,22 +18,19 @@
                             </a>
                         </div>
                     </div>
-
                     <div class="ibox-content ">
                         <form method="post" class="form-horizontal" action="{:url('news/handle')}" id="myform">
-                            <input type="hidden" name="id" value="{$info.id}">
-                            <input type="hidden" name="act" value="{$act}">
+                            <input type="hidden" name="id" value="{$info.id}">                        
                             <div class="form-group">
                                 <label class="col-sm-1  col-xs-12 control-label">文章标题：</label>
                                 <div class="col-sm-3">
                                     <input type="text" placeholder="文章标题" class="form-control" name="title" value="{$info.title}"> 
-                                   
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-1 col-xs-12 control-label">简略标题：</label>
                                 <div class="col-sm-3">
-                                    <input type="text" placeholder="简略标题" class="form-control" name="samll_title" value="{$info.samll_title}"> 
+                                    <input type="text" placeholder="简略标题" class="form-control" name="small_title" value="{$info.small_title}"> 
                                   
                                 </div>
                             </div>
@@ -42,7 +39,7 @@
                                 <div class="col-sm-3">
                                     <select class="form-control" name="catid" style="height:auto;">
                                         {volist  name="cats" id="vo"}
-                                         <option value="{$key}" {if condition="$vo['role_id'] eq $info['role_id']" } selected="selected" {/if} >{$vo}</option>
+                                         <option value="{$key}" {if condition="$info['catid'] eq $key" } selected="selected" {/if} >{$vo}</option>
                                         {/volist}
                                     </select>
                                 </div>
@@ -50,38 +47,36 @@
                             <div class="form-group">
                                 <label class="col-sm-1 col-xs-12 control-label">文章摘要：</label>
                                 <div class="col-sm-3">
-                                    <textarea name="description" cols="20" rows="6"  class="form-control"  placeholder="说点什么...最少输入10个字符" datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" ></textarea>
+                                    <textarea name="description" cols="20" rows="6"  class="form-control"  placeholder="说点什么...最少输入10个字符" datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" >{$info.description}</textarea>
                                     <!-- <p class="textarea-numberbar"><em class="textarea-length">0</em>/200</p> -->
                                    
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-1 col-xs-12 control-label">允许评论：</label>
-                                <div class="col-sm-3" skin-minimal>
-                                    <input type="checkbox" id="is_allowcomments" name="is_allowcomments" value="1">
-                                   <!--  <input type="checkbox" id="is_allowcomments" name="is_allowcomments" value="1" class="i-checks"> -->
-                                   
+                                <div class="col-sm-3" >
+                                    <input type="checkbox"  name="is_allowcomments"  {if condition="!$info['is_allowcomments']" } checked {/if}>
+                                   <!--  <input type="checkbox" id="is_allowcomments" name="is_allowcomments" value="1" class="i-checks"> -->                                   
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-1  col-xs-12 control-label">是否推荐到首页头图：</label>
                                 <div class="col-sm-3">
-                                    <input type="checkbox" id="is_head_figure" name="is_head_figure" value="1">
-                                   
+                                    <input type="checkbox"  name="is_head_figure"   {if condition="!$info['is_head_figure']" } checked {/if}>
                                 </div>
                             </div>  
                             <div class="form-group" >
                                 <label class="col-sm-1 col-xs-12 control-label">缩略图：</label>
                                 <div class="col-sm-3">
-                                       <input id="file_upload"  type="file" multiple="true" >
-                                        <img style="display: none" id="upload_org_code_img" src="" width="150" height="150">
-                                        <input id="file_upload_image" name="image" type="hidden" multiple="true" value="">
+                                    <input id="file_upload"  type="file" multiple="true" >
+                                    <img {if condition="!$info['image']" } style="display: none" {/if} id="upload_org_code_img" src="{$info['image']}" width="150" height="150">
+                                    <input id="file_upload_image" name="image" type="hidden" multiple="true" value="{$info['image']}">
                                 </div>
                             </div>  
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-1 control-label">文章内容：</label>
                                 <div class="col-xs-12 col-sm-9"">
-                                    <script id="editor" type="text/plain" name="content" style="width:100%;height:400px;"></script>
+                                    <script id="editor" type="text/plain" name="content" style="width:100%;height:400px;">{$info.content}</script>
                                 </div>
                             </div>       
                             <div class="form-group">
@@ -123,7 +118,7 @@
             focusInvalid: false, //当为false时，验证无效时，没有焦点响应  
             onkeyup: false,   
             submitHandler: function(form){   //表单提交句柄,为一回调函数，带一个参数：form   
-                from_save(from);               
+                from_save(form);               
             },  
             rules:{
                 title:{
@@ -138,18 +133,16 @@
                 sources_type:{
                    required:true,
                 },
-                is_allowcomments:{
-                  required:true,
-                },                
+                             
             },          
                       
         }); 
     </script> 
     <style>
-
       .pagination>li>a,.pagination>li>span{padding:6px 10px;}
-      #file_upload-button{position: absolute;z-index: 22;}
-   
+
+      #file_upload-button{position: absolute;}
+      #file_upload-button .uploadify-button-text{line-height:26px;display: block;}   
     </style> 
     </body>
 </html>

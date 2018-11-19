@@ -46,32 +46,58 @@ class News extends Base
             'page'=>$news->render()
         ]);
     }
-
     public function handle() {
 
-        if(request()->isPost()) {
-
-            $data = input('post.');
-            // 数据需要做检验 validate机制
-
-            //入库操作
-            try {
-                $id = model('News')->add($data);
-            }catch (\Exception $e) {
-                return $this->result('', 0, '新增失败');
-            }
-
-            if($id) {
-                return $this->result(['jump_url' => url('news/index')], 1, 'OK');
-            } else {
-                return $this->result('', 0, '新增失败');
-            }
+        if(request()->isPost()) {         
+            $this->saveNews();
         }else {
+            $id = input('id/d');      
+            if($id){
+                $info = model('News')->get(['id' => $id]);
+                $this->assign('info',$info);               
+            } 
             return $this->fetch('', [
                 'cats' => config('cat.lists')
             ]);
         }
     }
+    public function saveNews(){
+        $data = input('post.');
+        // 数据需要做检验 validate机制
+        $validate = validate('News');
+        if(!$validate->check($data)) {
+            $this->result('', 0,$validate->getError());                      
+        }   
+        if(empty($data['id'])){
+            $news= model('News')->get(['title' => $data['title']]);     
+            if($news){
+                $this->error("已存在相同的新闻名称!");
+            }else{
+                try {
+                    model('News')->add($data);
+                }catch (\Exception $e) {
+                    return $this->result('', 0, '新增失败');
+                }         
+            }
+        }else{
+            $news= model('News')->get(['title' => $data['title'],'id'=>['neq',$data['id']]]);     
+            if($news){
+                $this->error("已存在相同的新闻名称!");
+            }else{
+                try {
+                     model('News')->where('id', $data['id'])->update($data);
+                }catch (\Exception $e) {
+                    return $this->result('', 0, '保存失败');
+                }         
+            }            
+        } 
+        return $this->result(['jump_url' => url('news/index')], 1, 'OK');
+    }
+    public function delete(){
+        $this->model='News';
+        $this->nomaldelete('id');
+       
+    }
 
-    // 1、 id 获取记录所有数据 填充模板。  save([], ['id'=>$id])
+
 }

@@ -33,28 +33,6 @@ class Image extends Base
         echo json_encode(['status' => 0, 'message' => '上传失败']);
 
     }
+    
 
-    /**
-     * 七牛图片上传
-     *
-     * http://otwueljs0.bkt.clouddn.com/2017/07/30d35201707310115086587.jpg
-     * http://otwueljs0.bkt.clouddn.com/2017/07/30d35201707310115086587.jpg
-     */
-    public function upload() {
-        try {
-            $image = Upload::image();
-        }catch (\Exception $e) {
-            echo json_encode(['status' => 0, 'message' => $e->getMessage()]);
-        }
-        if($image) {
-            $data = [
-                'status' => 1,
-                'message' => 'OK',
-                'data' => config('qiniu.image_url').'/'.$image,
-            ];
-            echo json_encode($data);exit;
-        }else {
-            echo json_encode(['status' => 0, 'message' => '上传失败']);
-        }
-    }
 }

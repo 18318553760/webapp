@@ -15,7 +15,7 @@ use app\common\lib\Aes;
 class News extends Common {
 
     public function index() {
-        // 小伙伴仿照我们之前讲解的validate验证机制 去做相关校验
+       
         $data = input('get.');
 
         $whereData['status'] = config('code.status_normal');
